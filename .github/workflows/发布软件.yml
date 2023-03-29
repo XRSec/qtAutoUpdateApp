@@ -35,14 +35,14 @@ jobs:
       version: ${{ needs.jobs_v.outputs.version }}
       body: ${{ needs.jobs_v.outputs.body }}
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v5
         with:
           submodules: recursive
       - name: 读入环境信息
         run: |
           echo ${{ format('version {0}', env.version ) }} # 版本号
       - name: 编译环境设置 Python 3.9.13
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5.6.0
         with:
           python-version: "3.9.13"
           architecture: "x64"
@@ -54,13 +54,13 @@ jobs:
           python run_write_version.py
           pyinstaller --noconfirm --onefile --windowed --icon "app.ico" "my_app.py"
       - name: 测试运行情况
-        uses: GuillaumeFalourd/assert-command-line-output@v2
+        uses: GuillaumeFalourd/assert-command-line-output@v2.4
         with:
           command_line: ./dist/my_app.exe test
           contains: app run success
           expected_result: PASSED
       - name: 上传产物
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4.6.2
         with:
           name: window
           path: ./dist/*.exe
@@ -73,14 +73,14 @@ jobs:
       version: ${{ needs.jobs_v.outputs.version }}
       body: ${{ needs.jobs_v.outputs.body }}
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v5
         with:
           submodules: recursive
       - name: 读入环境信息
         run: |
           echo ${{ format('version {0}', env.version ) }}
       - name: 编译环境设置 Python 3.9.13
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5.6.0
         with:
           python-version: "3.9.13"
           architecture: "x64"
@@ -92,7 +92,7 @@ jobs:
           python run_write_version.py
           pyinstaller my_app_macos.spec
       - name: 测试运行情况
-        uses: GuillaumeFalourd/assert-command-line-output@v2
+        uses: GuillaumeFalourd/assert-command-line-output@v2.4
         with:
           command_line: ./dist/my_app.app/Contents/MacOS/my_app test
           contains: app run success
@@ -102,7 +102,7 @@ jobs:
           cd ./dist
           zip -r ./my_app_MacOS.zip ./my_app.app
       - name: 上传产物
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4.6.2
         with:
           name: macos
           path: ./dist/*.zip
@@ -118,7 +118,7 @@ jobs:
     steps:
       - name: 下载产物
         id: download
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v5
         with:
           path: ./
       - name: 读入环境信息
@@ -128,7 +128,7 @@ jobs:
           ls -R
 
       - name: 发布文件
-        uses: ncipollo/release-action@v1
+        uses: ncipollo/release-action@v1.18.0
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           allowUpdates: true # 覆盖文件
